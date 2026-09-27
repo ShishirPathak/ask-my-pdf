@@ -1,66 +1,85 @@
 # Ask My PDF
 
-A simple Python project that reads a PDF, splits it into chunks, finds the most relevant sections using sentence embeddings, and sends the relevant context to Gemini for a grounded answer.
+A Python project that reads a PDF, extracts text, creates smart chunks, retrieves the most relevant sections using embeddings and FAISS, and then sends the relevant context to Google Gemini for a grounded answer.
 
-## Project idea
+## Overview
 
-This project demonstrates a lightweight Retrieval-Augmented Generation (RAG) flow:
+This project demonstrates a lightweight Retrieval-Augmented Generation (RAG) pipeline:
 
-1. Load a PDF file
-2. Extract text from the document
+1. Read a PDF file
+2. Extract text from all pages
 3. Split the text into overlapping chunks
-4. Encode the chunks and the user question with a sentence transformer
-5. Use cosine similarity to find the most relevant chunks
-6. Pass the context to Gemini for an answer
+4. Convert chunks and the question into embeddings
+5. Use FAISS similarity search to find the best matches
+6. Send the selected context to Gemini
+7. Return a grounded answer based only on the document content
 
 ## Features
 
-- PDF text extraction using `pypdf`
-- Text chunking for better retrieval
-- Semantic similarity search with `SentenceTransformer`
-- LLM-powered answer generation using Google Gemini
-- Simple retry logic for API failures
+- PDF extraction using `pypdf`
+- Recursive chunking with `langchain-text-splitters`
+- Semantic retrieval with `SentenceTransformer` + `FAISS`
+- Gemini API integration for answer generation
+- Retry handling for transient API errors
+- Clean, modular Python structure
 
 ## Project structure
 
 ```text
 ask-my-pdf/
 ├── app.py
+├── app_langchain.py
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
 ├── sample.pdf
-└── .venv/   # local virtual environment (ignored by git)
+├── sample1.pdf
+└── .venv/   # local Python environment
 ```
 
 ## Prerequisites
 
 - Python 3.10+
-- A working Google Gemini API setup
-- Internet access for model calls
+- Git
+- A Google Gemini API key
+- Internet access for the Gemini API call
 
-## Installation
+## Setup
 
 ```bash
-cd "Users/shishirsmac/Personal/AI Learning/Project/ask-my-pdf"
+cd "/Users/shishirsmac/Personal/AI Learning/Project/ask-my-pdf"
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
+```
+
+## Required environment variable
+
+Before running the app, export your Gemini API key:
+
+```bash
+export GEMINI_API_KEY="your_api_key_here"
 ```
 
 ## Run the app
 
 ```bash
 source .venv/bin/activate
+python app_langchain.py
+```
+
+You can also use the simpler version:
+
+```bash
 python app.py
 ```
 
 ## Notes
 
-- The app currently uses `sample.pdf` as the default input file.
-- You can replace it with your own PDF file by updating the `PDF_PATH` constant in `app.py`.
-- If you have a Gemini API key configured in your environment, the app can call the model directly.
+- The default PDF file is `sample.pdf`.
+- You can change the input file by editing the `PDF_PATH` constant in `app_langchain.py`.
+- The app is designed for learning and experimentation with RAG, embeddings, and LLM-grounded question answering.
 
 ## License
 
